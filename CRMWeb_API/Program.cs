@@ -1,3 +1,5 @@
+using CRMWeb_API.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().
     WriteTo.File("log/CRMLogs.txt",rollingInterval: RollingInterval.Day).CreateLogger();
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Host.UseSerilog();
 
