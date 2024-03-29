@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CRM_WebAPP\CRM_AuthAPI\CRM_AuthAPI.csproj" />
     <ProjectReference Include="..\CRMWeb_API\CRMWeb_API.csproj" />
   </ItemGroup>
 
