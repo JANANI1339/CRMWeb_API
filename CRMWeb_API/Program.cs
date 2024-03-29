@@ -1,5 +1,7 @@
 using System.Text;
 using CRMWeb_API.Data;
+using CRMWeb_API.Middleware;
+using CRMWeb_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,11 +14,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().
     WriteTo.File("log/CRMLogs.txt",rollingInterval: RollingInterval.Day).CreateLogger();
+
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddDbContext<TenantDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
+
+builder.Services.AddTransient<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
 builder.Host.UseSerilog();
 
 var settingSection = builder.Configuration.GetSection("ApiSettings");
@@ -84,7 +94,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<TenantResolver>();
 app.MapControllers();
 
 app.Run();

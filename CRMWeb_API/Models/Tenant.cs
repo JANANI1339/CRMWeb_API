@@ -6,8 +6,8 @@ namespace CRMWeb_API.Models
     public class Tenant
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TenantId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string TenantId { get; set; }
 
         [Required]
         public string TenantName { get; set;}

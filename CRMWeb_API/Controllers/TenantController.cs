@@ -29,13 +29,13 @@ namespace CRMWeb_API.Controllers
             return Ok(tenants);
         }
 
-        [HttpGet("{id:int}", Name = "GetTenant")]
+        [HttpGet("{id:string}", Name = "GetTenant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Tenant> GetTenant(int id)
+        public ActionResult<Tenant> GetTenant(string id)
         {
-            if(id == 0)
+            if(string.IsNullOrEmpty(id))
             {
                 _logger.LogError("Id cannot be 0 for GetTenant request");
                 return BadRequest();
@@ -59,7 +59,7 @@ namespace CRMWeb_API.Controllers
                 _logger.LogError($"Input for Tenant Creation is null");
                 return BadRequest(tenant);
             }
-            if (tenant.TenantId > 0)
+            if (string.IsNullOrEmpty(tenant.TenantId))
             {
                 _logger.LogError($"Invalid TenantId for Creating new Tenant");
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -71,13 +71,13 @@ namespace CRMWeb_API.Controllers
             return CreatedAtRoute("GetTenant",new { id = tenant.TenantId }, tenant);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:string}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult DeleteTenant(int id)
+        public IActionResult DeleteTenant(string id)
         {
-            if (id == 0)
+            if (string.IsNullOrEmpty(id))
             {
                 _logger.LogError("Id cannot be 0 for Delete Tenant request");
                 return BadRequest();
@@ -95,10 +95,10 @@ namespace CRMWeb_API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:string}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateTenant(int id, [FromBody]Tenant tenant)
+        public IActionResult UpdateTenant(string id, [FromBody]Tenant tenant)
         {
             if (tenant == null || tenant.TenantId != id)
             {
@@ -127,7 +127,7 @@ namespace CRMWeb_API.Controllers
             return NoContent();
         }
 
-        private bool TenantExists(int id)
+        private bool TenantExists(string id)
         {
             return _db.Tenants.Any(e => e.TenantId == id);
         }

@@ -22,13 +22,35 @@ namespace CRMWeb_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CRMWeb_API.Models.Tenant", b =>
+            modelBuilder.Entity("CRMWeb_API.Models.Customer", b =>
                 {
-                    b.Property<int>("TenantId")
+                    b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
+
+                    b.Property<string>("CustomerCity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("CRMWeb_API.Models.Tenant", b =>
+                {
+                    b.Property<string>("TenantId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
@@ -50,17 +72,6 @@ namespace CRMWeb_API.Migrations
                     b.HasKey("TenantId");
 
                     b.ToTable("Tenants");
-
-                    b.HasData(
-                        new
-                        {
-                            TenantId = 1,
-                            CreatedTime = new DateTime(2024, 3, 28, 12, 42, 57, 397, DateTimeKind.Local).AddTicks(7095),
-                            EmailId = "",
-                            IsDeleted = false,
-                            TenantName = "Tenant1",
-                            UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 #pragma warning restore 612, 618
         }

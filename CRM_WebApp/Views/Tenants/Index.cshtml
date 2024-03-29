@@ -6,12 +6,20 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+
+<div class="col-6 mb-2">
+    <a  asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Create New Tenant
+    </a>
+</div>
+    @* <a asp-action="Create" class="btn btn-primary">Create New</a> *@
+
+<table class="table table-bordered table-striped">
     <thead>
-        <tr>
+        <tr class="table-primary">
+            <th>
+                @Html.DisplayNameFor(model => model.TenantId)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.TenantName)
             </th>
@@ -24,15 +32,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.UpdatedTime)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+            <tr class="table-light">
+            <td>
+                @Html.DisplayFor(modelItem => item.TenantId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TenantName)
             </td>
@@ -45,13 +53,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.UpdatedTime)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TenantId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TenantId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TenantId">Delete</a>
+            <td >
+                    <a asp-action="Edit" asp-route-id="@item.TenantId" class="btn btn-primary m-1 btn-block">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.TenantId" class="btn btn-warning m-1 btn-block">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.TenantId" class="btn btn-danger m-1 btn-block">Delete</a>
             </td>
         </tr>
 }

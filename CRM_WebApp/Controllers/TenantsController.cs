@@ -1,9 +1,6 @@
-﻿using System.Net;
-using System.Text;
-using CRM_WebApp.Models;
+﻿using System.Text;
 using CRM_WebApp.Service.IService;
 using CRMWeb_API.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -38,7 +35,7 @@ namespace CRM_WebApp.Controllers
         }
 
         // GET: Tenants/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             try
             {
@@ -62,7 +59,7 @@ namespace CRM_WebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TenantName,EmailId")] Tenant tenant)
+        public async Task<IActionResult> Create([Bind("TenantName,EmailId,TenantId")] Tenant tenant)
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +80,7 @@ namespace CRM_WebApp.Controllers
         }
 
         // GET: Tenants/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
             try { 
                 var tenant = await GetTenant(id);
@@ -101,7 +98,7 @@ namespace CRM_WebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TenantId,TenantName,EmailId")] Tenant tenant)
+        public async Task<IActionResult> Edit(string id, [Bind("TenantId,TenantName,EmailId")] Tenant tenant)
         { 
             if (ModelState.IsValid)
             {
@@ -111,18 +108,19 @@ namespace CRM_WebApp.Controllers
                     message.Content = new StringContent(JsonConvert.SerializeObject(tenant), Encoding.UTF8, "application/json");
                     var response = await client.SendAsync(message);
                     var apiContent = await response.Content.ReadAsStringAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    throw;
+                    throw ex;
                 }
-                return RedirectToAction(nameof(Index));
+                
             }
             return View(tenant);
         }
 
         // GET: Tenants/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             try { 
             var tenant = await GetTenant(id);
@@ -137,13 +135,12 @@ namespace CRM_WebApp.Controllers
         // POST: Tenants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             try {
                 var message = GetResponse(url+id, ApiType.DELETE);
                 var response = await client.SendAsync(message);
                 var apiContent = await response.Content.ReadAsStringAsync();
-                await client.DeleteAsync(url + id);
             return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -152,7 +149,7 @@ namespace CRM_WebApp.Controllers
             }
         }
 
-        private async Task<Tenant> GetTenant(int? id)
+        private async Task<Tenant> GetTenant(string? id)
         {
             var message = GetResponse(url+id, ApiType.GET);
             var response = await client.SendAsync(message);
