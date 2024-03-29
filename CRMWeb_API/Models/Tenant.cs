@@ -12,6 +12,7 @@ namespace CRMWeb_API.Models
         [Required]
         public string TenantName { get; set;}
 
+        [Required]
         public string EmailId { get; set; }
 
         public DateTime CreatedTime { get; set; }
